@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  auto-reviewer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      LOG_LEVEL: info
+      GITHUB_APP_ID: ${GITHUB_APP_ID}
+      GITHUB_APP_PRIVATE_KEY: ${GITHUB_APP_PRIVATE_KEY}
+      GITHUB_WEBHOOK_SECRET: ${GITHUB_WEBHOOK_SECRET}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-3-5-sonnet-20241022}
+      MAX_REVIEW_TOKENS: ${MAX_REVIEW_TOKENS:-4000}
+      ENABLE_SECURITY_SCAN: ${ENABLE_SECURITY_SCAN:-true}
+      ENABLE_PERFORMANCE_SCAN: ${ENABLE_PERFORMANCE_SCAN:-true}
+      ENABLE_STYLE_CHECK: ${ENABLE_STYLE_CHECK:-true}
+      ENABLE_LOGIC_ANALYSIS: ${ENABLE_LOGIC_ANALYSIS:-true}
+      RATE_LIMIT_PER_HOUR: ${RATE_LIMIT_PER_HOUR:-100}
+      ENABLE_ANALYTICS: ${ENABLE_ANALYTICS:-true}
+      ANALYTICS_DB_PATH: ${ANALYTICS_DB_PATH:-./data/analytics.json}
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

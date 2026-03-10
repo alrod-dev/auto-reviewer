@@ -1,0 +1,44 @@
+diff --git a/src/index.ts b/src/index.ts
+index abc1234..def5678 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -1,10 +1,12 @@
+ import express from 'express';
+
+ const app = express();
++const PORT = process.env.PORT || 3000;
+
+ app.get('/', (req, res) => {
+-  res.send('Hello World');
++  res.json({ message: 'Hello World', version: '1.0.0' });
+ });
+
+-app.listen(3000, () => {
+-  console.log('Server running on port 3000');
++app.listen(PORT, () => {
++  console.log(`Server running on port ${PORT}`);
+ });
+diff --git a/src/utils/helpers.ts b/src/utils/helpers.ts
+new file mode 100644
+index 0000000..abc1234
+--- /dev/null
++++ b/src/utils/helpers.ts
+@@ -0,0 +1,8 @@
++export function formatMessage(msg: string): string {
++  return msg.trim().toUpperCase();
++}
++
++export function validateEmail(email: string): boolean {
++  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
++  return emailRegex.test(email);
++}
+diff --git a/README.md b/README.md
+index xyz9999..abc1234 100644
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,5 @@
+ # My Project
+
++Simple Express.js application with utility helpers.
++
+ ## Getting Started
